@@ -1,0 +1,89 @@
+#!/usr/bin/perl
+
+use 5.018;
+use strict;
+use warnings;
+use utf8;
+use open qw (:std :utf8);
+use English qw ( -no_match_vars );
+use version; our $VERSION = qw (1.0);
+
+my $workdir;
+
+# before we run, change working dir
+BEGIN {
+	use Cwd qw (chdir abs_path);
+	my @CWD = split /\//, abs_path ($PROGRAM_NAME);
+
+	if ($#CWD > 1) {
+		$#CWD = $#CWD - 2;
+	}
+
+	$workdir = join '/', @CWD;
+	chdir $workdir;
+}
+
+use lib ("$workdir/lib", "$workdir/vendor_perl", "$workdir/vendor_perl/lib/perl5");
+no Cwd;
+use Cwd::utf8 qw (abs_path);
+use POSIX qw (setgid setuid);
+use File::Path qw (make_path);
+use File::Basename qw (dirname);
+use BotLib::Conf qw (LoadConf);
+use IRCBot qw (RunIRCBot);
+
+# if we run under root, create pid dir and set correct owner for it, same for debug log if it is defined
+if ($UID == 0) {
+	my $C = LoadConf ();
+
+	unless (defined $C->{user}) {
+		die "Unable to run as root, please define unprivileged user in config.json\n";
+	}
+
+	my ($uid, $gid) = (getpwnam $C->{user})[2,3];
+	my $piddir = dirname $C->{pid};
+
+	unless (-d $piddir) {
+		make_path (
+			$piddir, {
+				uid   => $uid,
+				group => $gid
+			}
+		) or die "Unable to create $piddir: $OS_ERROR\n";
+	}
+
+	my $logfile;
+
+	if (defined $C->{'log'}) {
+		$logfile = $C->{'log'};
+	} elsif (defined $C->{'debug_log'}) {
+		$logfile = $C->{'debug_log'};
+	}
+
+	if (defined $logfile) {
+		my $logdir = dirname $logfile;
+
+		unless (-d $logdir) {
+			make_path (
+				$logdir, {
+					uid   => $uid,
+					group => $gid
+				}
+			) or die "Unable to create $logdir: $OS_ERROR\n";
+		}
+	}
+
+# drop privs
+	setgid ($gid) or die "Unable to switch to group of $C->{user}: $OS_ERROR\n";
+	setuid ($uid) or die "Unable to switch to account $C->{user}: $OS_ERROR\n";
+}
+
+# set correct proctitle
+$PROGRAM_NAME = abs_path $PROGRAM_NAME;  ## no critic (Variables::RequireLocalizedPunctuationVars)
+
+RunIRCBot ();
+
+exit 0;
+
+__END__
+# vim: set ft=perl noet ai ts=4 sw=4 sts=4:

@@ -1,0 +1,61 @@
+{
+# all cached will go there, they named after module name
+    "server" : "127.0.0.1",
+    "port" : "6667",
+    "ssl" : 0,
+    "nick" : "aleesa",
+    "connect_cmd" : "/join #a\n/join #b",
+
+# where caches go
+    "cachedir" : "data/cache",
+
+# unprivileged system user to run bot as
+    "user" : "nobody",
+
+# where to store brains
+    "braindir": "data/brains",
+
+# bot commands will begin with this symbol
+    "csign": "!",
+
+# stderr
+    "log" : "/var/log/aleesa-irc-bot/error.log",
+# stdout
+    "debug_log" : "/dev/null",
+
+# ditto
+    "pid" : "/var/run/aleesa-irc-bot/aleesa-irc-bot.pid",
+
+# where to store brain with generated latin mumble
+    "lat" : {
+        "brain" : "data/lat/brain.sqlite",
+        "src" : "data/lat.txt"
+    },
+
+    "karma" : {
+        "dir" : "data/karma"
+    },
+
+    "friday" : {
+        "dir" : "data/friday",
+        "src" : "data/friday.txt"
+    },
+
+    "fortune" : {
+        "dir" : "data/fortune",
+        "srcdir" : "data/fortune_src"
+    },
+
+    "openweathermap" : {
+        "appid": "get_it_on_openweathermap.org"
+    },
+
+    "image": {
+        "dir" : "data/image",
+        "flickr" : {
+            "consumer_key" : "md5-like_hash",
+            "consumer_secret" : "some_hash-like_string",
+            "verifier": "some_hash-like_string"
+        }
+    }
+}
