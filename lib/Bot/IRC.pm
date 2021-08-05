@@ -4,7 +4,7 @@ package Bot::IRC;
 use 5.014;
 use exact;
 
-use Encode qw (_utf8_on _utf8_off encode_utf8 decode_utf8);
+use Encode qw (_utf8_on _utf8_off);
 use Daemon::Device;
 use Date::Format 'time2str';
 use IO::Socket::IP -register;

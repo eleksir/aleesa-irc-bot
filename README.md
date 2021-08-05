@@ -5,6 +5,10 @@
 It is based on Perl modules [Bot::IRC][1] and [Hailo][2] as
 conversation generator.
 
+Module [Bot::IRC][1] is vendored and tailored to this particular bot because
+of utf-8 issues in original source which are fix by hacking (yes, it is not
+canonical/convinient way fix it, what done is already done).
+
 Config located in **data/config.json**, sample config provided as
 **data/sample_config.json**.
 

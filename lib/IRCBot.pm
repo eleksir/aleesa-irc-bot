@@ -13,8 +13,6 @@ use version; our $VERSION = qw (1.0);
 use Exporter qw (import);
 our @EXPORT_OK = qw (RunIRCBot);
 
-my $c = LoadConf ();
-
 
 sub RunIRCBot {
 	my $c = LoadConf ();
@@ -50,6 +48,8 @@ sub RunIRCBot {
 	} else {
 		$bot->run;
 	}
+
+	return;
 }
 
 

@@ -98,3 +98,6 @@ lib_sections    = NAME | VERSION | DESCRIPTION | AUTHOR | LICENSE AND COPYRIGHT
 
 [-ControlStructures::ProhibitDeepNests]
 # jabber bot lib have very nested structures that a bit fiddle to navigate :(
+
+[-BuiltinFunctions::ProhibitComplexMappings]
+# so how I suppose to chomp() every damn string in array?

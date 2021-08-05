@@ -196,3 +196,5 @@ sub init {
 1;
 
 __END__
+
+# vim: set ft=perl noet ai ts=4 sw=4 sts=4:
