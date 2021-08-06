@@ -598,7 +598,7 @@ sub say {
 
     for my $s (@_) {
         if ($s =~ /^PRIVMSG /) {
-            foreach my $buf (split_irc_msg ($s)) {
+            foreach my $buf (split_irc_msg ($self, $s)) {
                 my $string = $buf;
                 _utf8_off ($buf);
                 $self->{socket}->syswrite( $buf . "\r\n");
@@ -681,6 +681,7 @@ sub health {
 }
 
 sub split_irc_msg {
+    my $self = shift;
     my $str = shift;
     chomp $str;
 
@@ -701,8 +702,13 @@ sub split_irc_msg {
         $prefix = CORE::join ':', @message;
         $prefix .= ':';
     } else {
-        $prefix = CORE::join ':', @message;
-        $prefix .= ', ';
+        if ($message [1] eq $self->{nick} || $message [1] eq $self->{in}->{nick}) {
+            $prefix = CORE::join ':', @message;
+            $prefix .= ', ';
+        } else {
+            $prefix = CORE::join ':', @message;
+            $prefix .= ':';
+        }
     }
 
     $MAXLEN = $MAXLEN - bytes::length ($prefix) - 100;
