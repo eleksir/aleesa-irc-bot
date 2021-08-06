@@ -36,7 +36,7 @@ sub RunIRCBot {
 		},
 	);
 
-	$bot->load ('OnMessage');  # our main plugin that handles all the incomming messages, mostly
+	$bot->load ('OnMessage', 'ReJoin');  # our main plugin that handles all the incomming messages, mostly
 	$bot->helps(
 		about => 'I am just another chatty bot.',
 	);
