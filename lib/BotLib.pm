@@ -21,6 +21,7 @@ use BotLib::Karma qw (KarmaGet);
 use BotLib::Kitty qw (Kitty);
 use BotLib::Lat qw (Lat);
 use BotLib::Monkeyuser qw (Monkeyuser);
+use BotLib::Proverb qw (Proverb);
 use BotLib::Util qw (trim utf2sha1);
 use BotLib::Weather qw (Weather);
 use BotLib::Xkcd qw (Xkcd);
@@ -126,6 +127,8 @@ sub Command {
 		$reply = KarmaGet ($chatid, $mytext);
 	} elsif (substr ($text, 1) eq 'friday'  ||  substr ($text, 1) eq 'пятница') {
 		$reply = Friday ();
+	} elsif (substr ($text, 1) eq 'proverb'  ||  substr ($text, 1) eq 'пословица') {
+		$reply = Proverb ();
 	} elsif (substr ($text, 1) eq 'fortune'  ||  substr ($text, 1) eq 'фортунка'  ||  substr ($text, 1) eq 'f'  ||  substr ($text, 1) eq 'ф') {
 		my $phrase = Fortune ();
 		$reply = $phrase;

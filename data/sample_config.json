@@ -46,6 +46,11 @@
         "srcdir" : "data/fortune_src"
     },
 
+    "proverb" : {
+        "dir" : "data/proverb",
+        "srcdir" : "data/proverb_src"
+    },
+
     "openweathermap" : {
         "appid": "get_it_on_openweathermap.org"
     },
