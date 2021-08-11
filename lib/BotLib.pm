@@ -60,6 +60,26 @@ sub Command {
 		$reply = Weather ($city) =~ tr/\n/ /r;
 	} elsif (substr ($text, 1) eq 'anek'  ||  substr ($text, 1) eq 'анек' || substr ($text, 1) eq 'анекдот' ) {
 		$reply = Anek ();
+	} elsif (substr ($text, 1) eq 'coin' || substr ($text, 1) eq 'монетка') {
+		if (rand (101) < 0.016) {
+			$reply = "ребро";
+		} else {
+			if (irand (2) == 0) {
+				if (irand (2) == 0) {
+					$reply = 'орёл';
+				} else {
+					$reply = 'аверс';
+				}
+			} else {
+				if (irand (2) == 0) {
+					$reply = 'решка';
+				} else {
+					$reply = 'реверс';
+				}
+			}
+		}
+	} elsif (substr ($text, 1) eq 'roll' || substr ($text, 1) eq 'dice' || substr ($text, 1) eq 'кости') {
+		$reply = sprintf "На первой кости выпало %d, а на второй — %d.", irand (6) + 1, irand (6) + 1;
 	} elsif (substr ($text, 1) eq 'version'  ||  substr ($text, 1) eq 'ver') {
 		$reply = 'Версия нуль.чего-то_там.чего-то_там';
 	} elsif (substr ($text, 1) eq 'help'  ||  substr ($text, 1) eq 'помощь') {
