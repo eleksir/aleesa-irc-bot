@@ -8,6 +8,7 @@ use open qw (:std :utf8);
 use English qw ( -no_match_vars );
 use Carp qw (carp);
 use Math::Random::Secure qw (irand);
+use BotLib::Anek qw (Anek);
 use BotLib::Archeologist qw (Dig);
 use BotLib::Buni qw (Buni);
 use BotLib::Conf qw (LoadConf);

@@ -1,8 +1,9 @@
-requires "Bot::IRC";
+requires "AnyEvent::IRC";
 requires "CHI";
 requires "CHI::Driver::BerkeleyDB";
 requires "Cwd";
 requires "Cwd::utf8";
+requires "Date::Format::ISO8601";
 requires "DateTime";
 requires "DB_File";
 requires "Digest::HMAC_SHA1";

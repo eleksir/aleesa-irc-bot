@@ -30,7 +30,7 @@ use POSIX qw (setgid setuid);
 use File::Path qw (make_path);
 use File::Basename qw (dirname);
 use BotLib::Conf qw (LoadConf);
-use IRCBot qw (RunIRCBot);
+use IRCBot2 qw (RunIRCBot);
 
 # if we run under root, create pid dir and set correct owner for it, same for debug log if it is defined
 if ($UID == 0) {

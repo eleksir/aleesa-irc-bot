@@ -1,32 +1,40 @@
 {
-# all cached will go there, they named after module name
+    # where to connect
     "server" : "127.0.0.1",
     "port" : "6667",
     "ssl" : 0,
     "nick" : "aleesa",
-    "connect_cmd" : "/join #a\n/join #b",
 
-# where caches go
+    # join to at least one channel
+    "channels": [
+        "#a",
+        "#b"
+    ],
+
+    # identify with nickserv
+    "identify": "password",
+
+    # where caches go
     "cachedir" : "data/cache",
 
-# unprivileged system user to run bot as
+    # unprivileged system user to run bot as
     "user" : "nobody",
 
-# where to store brains
+    # where to store brains
     "braindir": "data/brains",
 
-# bot commands will begin with this symbol
+    # bot commands will begin with this symbol
     "csign": "!",
 
-# stderr
+    # stderr
     "log" : "/var/log/aleesa-irc-bot/error.log",
-# stdout
+    # stdout
     "debug_log" : "/dev/null",
 
-# ditto
+    # ditto
     "pid" : "/var/run/aleesa-irc-bot/aleesa-irc-bot.pid",
 
-# where to store brain with generated latin mumble
+    # where to store brain with generated latin mumble
     "lat" : {
         "brain" : "data/lat/brain.sqlite",
         "src" : "data/lat.txt"
