@@ -51,20 +51,147 @@ sub RandomCommonPhrase () {
 }
 
 sub Command {
+	my $bot = shift;
 	my $chatid = shift;
 	my $chattername = shift;
 	my $text = shift;
 
 	my $reply;
 
-	if (substr ($text, 1, 2) eq 'w '  ||  substr ($text, 1, 2) eq 'п ') {
+	if (substr ($text, 1, 3) eq 'rum' || substr ($text, 1, 3) eq 'ром') {
+		my $target;
+
+		if ((length ($text) > 5)) {
+			$target = trim (substr $text, 5);
+		}
+
+		if (! defined $target || ($target eq '')) {
+			$target = $chattername;
+		}
+
+		$reply = 'притаскивает на подносе стопку рома для ' . $target . ', края стопки искрятся кристаллами соли.';
+		$bot->send_long_message ('utf8', 0, "PRIVMSG\001ACTION", $chatid, $reply);
+		return;
+	} elsif (substr ($text, 1, 5) eq 'vodka' || substr ($text, 1, 5) eq 'водка') {
+		my $target;
+
+		if ((length ($text) > 7)) {
+			$target = trim (substr $text, 7);
+		}
+
+		if (! defined $target || ($target eq '')) {
+			$target = $chattername;
+		}
+
+		$reply = 'подаёт шот водки с небольшим маринованным огурчиком на блюдце для ' . $target . '. Из огурчика торчит небольшая вилочка.';
+		$bot->send_long_message ('utf8', 0, "PRIVMSG\001ACTION", $chatid, $reply);
+		return;
+	} elsif (substr ($text, 1, 4) eq 'beer' || substr ($text, 1, 4) eq 'пиво') {
+		my $target;
+
+		if ((length ($text) > 6)) {
+			$target = trim (substr $text, 6);
+		}
+
+		if (! defined $target || ($target eq '')) {
+			$target = $chattername;
+		}
+
+		$reply = 'бахает об стол перед ' . $target . ' кружкой холодного пива, часть пенной шапки сползает по запотевшей стенке кружки.';
+		$bot->send_long_message ('utf8', 0, "PRIVMSG\001ACTION", $chatid, $reply);
+		return;
+	} elsif (substr ($text, 1, 7) eq 'tequila') {
+		my $target;
+
+		if ((length ($text) > 9)) {
+			$target = trim (substr $text, 9);
+		}
+
+		if (! defined $target || ($target eq '')) {
+			$target = $chattername;
+		}
+
+		$reply = 'ставит рядом с ' . $target . ' шот текилы, аккуратно на ребро стопки насаживает дольку лайма и ставит кофейное блюдце с горочкой соли.';
+		$bot->send_long_message ('utf8', 0, "PRIVMSG\001ACTION", $chatid, $reply);
+		return;
+	} elsif (substr ($text, 1, 6) eq 'текила') {
+		my $target;
+
+		if ((length ($text) > 8)) {
+			$target = trim (substr $text, 8);
+		}
+
+		if (! defined $target || ($target eq '')) {
+			$target = $chattername;
+		}
+
+		$reply = 'ставит рядом с ' . $target . ' шот текилы, аккуратно на ребро стопки насаживает дольку лайма и ставит кофейное блюдце с горочкой соли.';
+		$bot->send_long_message ('utf8', 0, "PRIVMSG\001ACTION", $chatid, $reply);
+		return;
+	} elsif (substr ($text, 1, 6) eq 'whisky') {
+		my $target;
+
+		if ((length ($text) > 8)) {
+			$target = trim (substr $text, 8);
+		}
+
+		if (! defined $target || ($target eq '')) {
+			$target = $chattername;
+		}
+
+		$reply = 'демонстративно достаёт из морозилки пару кубических камушков, бросает их в толстодонный стакан и аккуратно наливает Jack Daniels. Запускает стакан вдоль барной стойки, он останавливается около ' . $target . '.';
+		$bot->send_long_message ('utf8', 0, "PRIVMSG\001ACTION", $chatid, $reply);
+		return;
+	} elsif (substr ($text, 1, 5) eq 'виски') {
+		my $target;
+
+		if ((length ($text) > 7)) {
+			$target = trim (substr $text, 7);
+		}
+
+		if (! defined $target || ($target eq '')) {
+			$target = $chattername;
+		}
+
+		$reply = 'демонстративно достаёт из морозилки пару кубических камушков, бросает их в толстодонный стакан и аккуратно наливает Jack Daniels. Запускает стакан вдоль барной стойки, он останавливается около ' . $target . '.';
+		$bot->send_long_message ('utf8', 0, "PRIVMSG\001ACTION", $chatid, $reply);
+		return;
+	} elsif (substr ($text, 1, 8) eq 'absinthe') {
+		my $target;
+
+		if ((length ($text) > 10)) {
+			$target = trim (substr $text, 10);
+		}
+
+		if (! defined $target || ($target eq '')) {
+			$target = $chattername;
+		}
+
+		$reply = 'наливает абсент в стопку. Смочив кубик сахара в абсенте кладёт его на дырявую ложечку и пожигает. Как только пламя потухнет, ' . $c->{nick} . ' размешивает оплавившийся кубик в абсенте и подносит стопку ' . $target . '.';
+		$bot->send_long_message ('utf8', 0, "PRIVMSG\001ACTION", $chatid, $reply);
+		return;
+	} elsif (substr ($text, 1, 6) eq 'абсент') {
+		my $target;
+
+		if ((length ($text) > 8)) {
+			$target = trim (substr $text, 8);
+		}
+
+		if (! defined $target || ($target eq '')) {
+			$target = $chattername;
+		}
+
+		$reply = 'наливает абсент в стопку. Смочив кубик сахара в абсенте кладёт его на дырявую ложечку и пожигает. Как только пламя потухнет, ' . $c->{nick} . ' размешивает оплавившийся кубик в абсенте и подносит стопку ' . $target . '.';
+		$bot->send_long_message ('utf8', 0, "PRIVMSG\001ACTION", $chatid, $reply);
+		return;
+	} elsif (substr ($text, 1, 2) eq 'w '  ||  substr ($text, 1, 2) eq 'п ') {
 		my $city = substr $text, 2;
 		$reply = Weather ($city) =~ tr/\n/ /r;
 	} elsif (substr ($text, 1) eq 'anek'  ||  substr ($text, 1) eq 'анек' || substr ($text, 1) eq 'анекдот' ) {
 		$reply = Anek ();
 	} elsif (substr ($text, 1) eq 'coin' || substr ($text, 1) eq 'монетка') {
 		if (rand (101) < 0.016) {
-			$reply = "ребро";
+			$reply = 'ребро';
 		} else {
 			if (irand (2) == 0) {
 				if (irand (2) == 0) {
@@ -81,11 +208,9 @@ sub Command {
 			}
 		}
 	} elsif (substr ($text, 1) eq 'roll' || substr ($text, 1) eq 'dice' || substr ($text, 1) eq 'кости') {
-		$reply = sprintf "На первой кости выпало %d, а на второй — %d.", irand (6) + 1, irand (6) + 1;
+		$reply = sprintf 'На первой кости выпало %d, а на второй — %d.', irand (6) + 1, irand (6) + 1;
 	} elsif (substr ($text, 1) eq 'version'  ||  substr ($text, 1) eq 'ver') {
 		$reply = 'Версия нуль.чего-то_там.чего-то_там';
-	} elsif (substr ($text, 1) eq 'help'  ||  substr ($text, 1) eq 'помощь') {
-		$reply = "Попробуй '$c->{nick}, help' без кавычек, должно помочь.";
 	} elsif (substr ($text, 1) eq 'lat'  ||  substr ($text, 1) eq 'лат') {
 		$reply = Lat ();
 	} elsif (substr ($text, 1) eq 'cat'  ||  substr ($text, 1) eq 'кис') {

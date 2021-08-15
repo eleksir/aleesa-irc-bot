@@ -6,11 +6,11 @@ use warnings;
 use utf8;
 use open qw (:std :utf8);
 use English qw ( -no_match_vars );
-use Carp qw (carp);
 use Encode;
 use HTML::TokeParser;
 use HTTP::Tiny;
 use JSON::XS;
+use Log::Any qw ($log);
 
 use version; our $VERSION = qw (1.0);
 use Exporter qw (import);
@@ -58,14 +58,14 @@ sub Anek {
 				my @anek = split (/<br>/, $anek);
 				$ret = join ("\n", @anek);
 			} else {
-				carp (sprintf "[WARN] anekdot.ru server returns incorrect json, full response text message: %s\n", $response_text);
+				$log->warn (sprintf '[WARN] anekdot.ru server returns incorrect json, full response text message: %s', $response_text);
 			}
 		} else {
-			carp (sprintf "[WARN] anekdot.ru server returns unexpected response text: %s\n", $response_text);
+			$log->warn (sprintf '[WARN] anekdot.ru server returns unexpected response text: %s', $response_text);
 		}
 
 	} else {
-		carp (sprintf "[WARN] anekdot.ru server return status %s with message: %s\n", $r->code, $r->message);
+		$log->warn (sprintf '[WARN] anekdot.ru server return status %s with message: %s', $r->code, $r->message);
 	}
 
 	return $ret;

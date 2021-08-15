@@ -6,13 +6,13 @@ use warnings;
 use utf8;
 use open qw (:std :utf8);
 use English qw ( -no_match_vars );
-use Carp qw (carp);
 use Encode;
 use CHI;
 use CHI::Driver::BerkeleyDB;
 use DateTime;
 use HTTP::Tiny;
 use HTML::TokeParser;
+use Log::Any qw ($log);
 use POSIX qw (strftime);
 use BotLib::Conf qw (LoadConf);
 
@@ -66,7 +66,7 @@ sub Drink {
 				$ret = join "\n", @holiday;
 			}
 		} else {
-			carp (sprintf "[WARN] Server return status %s with message: %s\n", $r->{status}, $r->{reason});
+			$log->warn (sprintf '[WARN] Server return status %s with message: %s', $r->{status}, $r->{reason});
 			return undef;
 		}
 

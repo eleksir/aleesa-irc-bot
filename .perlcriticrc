@@ -101,3 +101,6 @@ lib_sections    = NAME | VERSION | DESCRIPTION | AUTHOR | LICENSE AND COPYRIGHT
 
 [-BuiltinFunctions::ProhibitComplexMappings]
 # so how I suppose to chomp() every damn string in array?
+
+[-ValuesAndExpressions::ProhibitEscapedCharacters]
+# lets follow example of AnyEvent::IRC::Client, and do not complicate this stuff

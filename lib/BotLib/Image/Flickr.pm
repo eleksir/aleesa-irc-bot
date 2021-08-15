@@ -6,11 +6,11 @@ use warnings;
 use utf8;
 use open qw (:std :utf8);
 use English qw ( -no_match_vars );
-use Carp qw (carp);
 use Digest::HMAC_SHA1 qw (hmac_sha1);
 use File::Path qw (make_path);
 use JSON::XS;
 use HTTP::Tiny;
+use Log::Any qw ($log);
 use Math::Random::Secure qw (irand);
 use MIME::Base64;
 use SQLite_File;
@@ -338,19 +338,19 @@ sub flickrSearchByText {
 				if (defined $response) {
 					return $response;
 				} else {
-					carp ("[WARN] Flickr api returns incorrect json: $r->{content}\n");
+					$log->warn ("[WARN] Flickr api returns incorrect json: $r->{content}");
 					return undef;
 				}
 			} else {
-				carp ("[WARN] Flickr api returns incorrect json: $r->{content}\n");
+				$log->warn ("[WARN] Flickr api returns incorrect json: $r->{content}");
 				return undef;
 			}
 		} else {
-			carp ("[WARN] Flickr api returns incorrect json: $r->{content}\n");
+			$log->warn ("[WARN] Flickr api returns incorrect json: $r->{content}");
 			return undef;
 		}
 	} else {
-		carp ("[WARN] HTTP status code not 200: $r->{status}, $r->{content}\n");
+		$log->warn ("[WARN] HTTP status code not 200: $r->{status}, $r->{content}");
 		return undef;
 	}
 }
@@ -447,19 +447,19 @@ sub flickrSearchByTags {
 				if (defined $response) {
 					return $response;
 				} else {
-					carp ("[WARN] Flickr api returns incorrect json: $r->{content}\n");
+					$log->warn ("[WARN] Flickr api returns incorrect json: $r->{content}");
 					return undef;
 				}
 			} else {
-				carp ("[WARN] Flickr api returns incorrect json: $r->{content}\n");
+				$log->warn ("[WARN] Flickr api returns incorrect json: $r->{content}");
 				return undef;
 			}
 		} else {
-			carp ("[WARN] Flickr api returns incorrect json: $r->{content}\n");
+			$log->warn ("[WARN] Flickr api returns incorrect json: $r->{content}");
 			return undef;
 		}
 	} else {
-		carp ("[WARN] HTTP status code not 200: $r->{status}, $r>{content}\n");
+		$log->warn ("[WARN] HTTP status code not 200: $r->{status}, $r>{content}");
 		return undef;
 	}
 }
@@ -560,13 +560,13 @@ sub FlickrByTags {
 
 	unless (-d $dir) {
 		make_path ($dir) or do {
-			carp ("[ERROR] Unable to create $dir: $OS_ERROR\n");
+			$log->error ("[ERROR] Unable to create $dir: $OS_ERROR");
 			return 0;
 		};
 	}
 
 	tie my %secret, 'SQLite_File', $backingfile  ||  do {
-		carp ("[ERROR] Unable to tie to $backingfile: $OS_ERROR\n");
+		$log->error ("[ERROR] Unable to tie to $backingfile: $OS_ERROR");
 		return 0;
 	};
 
@@ -587,7 +587,7 @@ sub FlickrByTags {
 			$item = sprintf 'https://live.staticflickr.com/%s/%s_%s_z.jpg', $item->{server}, $item->{id}, $item->{secret};
 			return $item;
 		} else {
-			carp ("[NOTICE] Flickr api returns empty search result list\n");
+			$log->notice ('[NOTICE] Flickr api returns empty search result list');
 			return;
 		}
 	} else {
@@ -601,13 +601,13 @@ sub FlickrByText {
 
 	unless (-d $dir) {
 		make_path ($dir) or do {
-			carp ("[ERROR] Unable to create $dir: $OS_ERROR\n");
+			$log->error ("[ERROR] Unable to create $dir: $OS_ERROR");
 			return 0;
 		};
 	}
 
 	tie my %secret, 'SQLite_File', $backingfile  ||  do {
-		carp ("[ERROR] Unable to tie to $backingfile: $OS_ERROR\n");
+		$log->error ("[ERROR] Unable to tie to $backingfile: $OS_ERROR");
 		return 0;
 	};
 
@@ -628,7 +628,7 @@ sub FlickrByText {
 			$item = sprintf 'https://live.staticflickr.com/%s/%s_%s_z.jpg', $item->{server}, $item->{id}, $item->{secret};
 			return $item;
 		} else {
-			carp ("[NOTICE] Flickr api returns empty search result list\n");
+			$log->notice ('[NOTICE] Flickr api returns empty search result list');
 			return;
 		}
 	} else {

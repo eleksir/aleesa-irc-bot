@@ -26,10 +26,9 @@
     # bot commands will begin with this symbol
     "csign": "!",
 
-    # stderr
-    "log" : "/var/log/aleesa-irc-bot/error.log",
-    # stdout
-    "debug_log" : "/dev/null",
+    # log settings
+    "log" : "/var/log/aleesa-irc-bot/aleesa-irc-bot.log",
+    "loglevel" : "notice";
 
     # ditto
     "pid" : "/var/run/aleesa-irc-bot/aleesa-irc-bot.pid",

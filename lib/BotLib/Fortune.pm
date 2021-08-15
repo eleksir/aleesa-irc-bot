@@ -7,8 +7,9 @@ use warnings;
 use utf8;
 use open qw (:std :utf8);
 use English qw ( -no_match_vars );
-use Carp qw (croak carp);
+use Carp qw (croak);
 use File::Path qw (make_path);
+use Log::Any qw ($log);
 use Math::Random::Secure qw (irand);
 use MIME::Base64;
 use SQLite_File;
@@ -69,7 +70,7 @@ sub Fortune () {
 	my $backingfile = sprintf '%s/fortune.sqlite', $dir;
 
 	tie my @array, 'SQLite_File', $backingfile  ||  do {
-		carp ("[ERROR] Unable to tie to $backingfile: $OS_ERROR\n");
+		$log->error ("[ERROR] Unable to tie to $backingfile: $OS_ERROR");
 		return '';
 	};
 

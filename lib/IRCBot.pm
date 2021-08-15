@@ -1,4 +1,4 @@
-package IRCBot2;
+package IRCBot;
 
 use 5.018;
 use strict;
@@ -9,13 +9,16 @@ use English qw ( -no_match_vars );
 use AnyEvent;
 use AnyEvent::IRC;
 use AnyEvent::IRC::Client;
+use AnyEvent::IRC::Util qw (prefix_nick);
 use Date::Format::ISO8601 qw (gmtime_to_iso8601_datetime);
-use Encode qw (_utf8_on _utf8_off decode encode);
+use Encode qw (decode);
 use Hailo;
+use Log::Any qw ($log);
 use BotLib qw (Command RandomCommonPhrase);
 use BotLib::Conf qw (LoadConf);
 use BotLib::Karma qw (KarmaSet);
 use BotLib::Util qw (trim utf2sha1);
+use Data::Dumper;
 
 use version; our $VERSION = qw (1.0);
 use Exporter qw (import);
@@ -26,15 +29,15 @@ sub RunIRCBot {
 	my $c = LoadConf ();
 	my $hailo;
 	my $cv = AnyEvent->condvar;
-	my $irc = new AnyEvent::IRC::Client;
+	my $irc = AnyEvent::IRC::Client->new(send_initial_whois => 1);
 
 	$irc->reg_cb (
 		irc_privmsg => sub {
 			my ($self, $msg) = @_;
 			my $botnick = $irc->nick ();
 			my $chatid = $msg->{params}->[0];
-			my $text = decode('utf8', $msg->{params}->[-1]);
-			my $nick = (split /!/, $msg->{prefix})[0];
+			my $text = decode ('utf8', $msg->{params}->[-1]);
+			my $nick = prefix_nick ($msg->{prefix});
 			my $answer;
 
 			unless (defined $text) { return; }
@@ -63,7 +66,7 @@ sub RunIRCBot {
 					};
 
 					unless (defined $hailo->{$chatid}) {
-						warn ($EVAL_ERROR);
+						$log->warn ($EVAL_ERROR);
 						return;
 					}
 				}
@@ -73,7 +76,7 @@ sub RunIRCBot {
 				};
 
 				unless (defined $answer) {
-					warn ($EVAL_ERROR);
+					$log->warn ($EVAL_ERROR);
 					$answer = sprintf '%s, %s', $nick, RandomCommonPhrase ();
 				}
 			} elsif (substr ($text, -2) eq '++'  ||  substr ($text, -2) eq '--') {
@@ -81,7 +84,7 @@ sub RunIRCBot {
 				my @arr = split /\n/, $text;
 
 				if ($#arr < 1) {
-					my $answer = eval {
+					$answer = eval {
 						KarmaSet (
 							$chatid,
 							trim ( substr ($text, 0, -2) ),
@@ -90,12 +93,56 @@ sub RunIRCBot {
 					};
 
 					unless (defined $answer) {
-						warn ($EVAL_ERROR);
+						$log->warn ($EVAL_ERROR);
 						return;
 					}
 				}
 			} elsif (substr ($text, 0, 1) eq $c->{csign}) {
-				$answer = Command ($chatid, $nick, $text);
+				if (substr ($text, 1) eq 'help' || substr ($text, 1) eq 'помощь') {
+					my $csign = $c->{csign};
+					$answer = << "EOA";
+${csign}help | ${csign}помощь             - это сообщение
+${csign}anek | ${csign}анек | ${csign}анекдот    - рандомный анекдот с anekdot.ru
+${csign}buni                       - комикс-стрип hapi buni
+${csign}bunny                      - кролик
+${csign}rabbit | ${csign}кролик           - кролик
+${csign}cat | ${csign}кис                 - кошечка
+${csign}dice | ${csign}roll | ${csign}кости      - бросить кости
+${csign}dig | ${csign}копать              - заняться археологией
+${csign}drink | ${csign}праздник          - какой сегодня праздник?
+${csign}fish | ${csign}fisher             - порыбачить
+${csign}рыба | ${csign}рыбка | ${csign}рыбалка   - порыбачить
+${csign}f | ${csign}ф                     - рандомная фраза из сборника цитат fortune_mod
+${csign}fortune | ${csign}фортунка        - рандомная фраза из сборника цитат fortune_mod
+${csign}fox | ${csign}лис                 - лисичка
+${csign}friday | ${csign}пятница          - а не пятница ли сегодня?
+${csign}frog | ${csign}лягушка            - лягушка
+${csign}horse | ${csign}лошадь | ${csign}лошадка - лошадка
+${csign}karma фраза                - посмотреть карму фразы
+${csign}карма фраза                - посмотреть карму фразы
+фраза++ | фраза--           - повысить или понизить карму фразы
+${csign}lat | ${csign}лат                 - сгенерировать фразу из крылатого латинского выражения
+${csign}monkeyuser                 - комикс-стрип MonkeyUser
+${csign}owl | ${csign}сова                - сова
+${csign}ping | ${csign}пинг               - попинговать бота
+${csign}proverb | ${csign}пословица       - рандомная русская пословица
+${csign}snail | ${csign}улитк а           - улитка
+${csign}some_brew                  - выдать соответствующий напиток, бармен может налить rum, ром, vodka, водку, beer, пиво, tequila, текила, whisky, виски, absinthe, абсент
+${csign}ver | ${csign}version             - написать что-то про версию ПО
+${csign}версия                     - написать что-то про версию ПО
+${csign}w город | ${csign}п город         - погода в городе
+${csign}xkcd                       - комикс-стрип с xkcb.ru
+EOA
+					foreach my $string (split /\n/, $answer) {
+						if ($string ne '') {
+							$irc->send_long_message ('utf8', 0, "PRIVMSG\001ACTION", $nick, $string);
+						}
+					}
+
+					return;
+				}
+
+				$answer = Command ($self, $chatid, $nick, $text);
 
 				unless (defined $answer && $answer ne '') {
 					return;
@@ -113,7 +160,7 @@ sub RunIRCBot {
 					);
 
 					unless (defined $hailo->{$chatid}) {
-						warn ($EVAL_ERROR);
+						$log->warn ($EVAL_ERROR);
 						return;
 					}
 				}
@@ -124,8 +171,13 @@ sub RunIRCBot {
 			if (defined $answer) {
 					foreach my $string (split /\n/, $answer) {
 						if ($string ne '') {
-							_utf8_off ($string);
-							$irc->send_chan ($chatid, "PRIVMSG", $chatid, $string);
+							if ($irc->is_my_nick ($chatid)) {
+								# private chat
+								$irc->send_long_message ('utf8', 0, 'PRIVMSG', $nick, $string);
+							} else {
+								# chat in channel
+								$irc->send_long_message ('utf8', 0, 'PRIVMSG', $chatid, $string);
+							}
 						}
 					}
 			}
@@ -136,7 +188,7 @@ sub RunIRCBot {
 		connect => sub {
 			my ($pc, $err) = @_;
 			if (defined $err) {
-				warn "Couldn't connect to server: $err\n";
+				$log->err ("Couldn't connect to server: $err\n");
 			}
 
 			if (defined ($c->{identify}) && $c->{identify} ne '') {
@@ -148,14 +200,14 @@ sub RunIRCBot {
 			}
 
 			for my $chan (@{$c->{channels}}) {
-				$irc->send_srv ("JOIN", $chan);
+				$irc->send_srv ('JOIN', $chan);
 			}
 
 			return;
 		},
 
 		connfail => sub {
-			warn "Connection failed, trying again";
+			$log->err ('Connection failed, trying again');
 			sleep 5;
 
 			$irc->connect(
@@ -171,13 +223,13 @@ sub RunIRCBot {
 
 		registered => sub {
 			my ($self) = @_;
-			print "registered!\n";
+			$log->info ('Registered on server');
 			$irc->enable_ping (60);
 			return;
 		},
 
 		disconnect => sub {
-			print "disconnected: $_[1]!\n";
+			$log->err ("Disconnected: $_[1]");
 			sleep 5;
 
 			$irc->connect(
@@ -197,9 +249,9 @@ sub RunIRCBot {
 			my ($self, $kicked_nick, $channel, $is_myself, $msg, $kicker_nick) = @_;
 
 			if ($is_myself) {
-				warn sprintf ('%s kicked me from %s with reason: %s', $kicker_nick, $channel, decode('utf8', $msg));
+				$log->warn (sprintf '%s kicked me from %s with reason: %s', $kicker_nick, $channel, decode ('utf8', $msg));
 				sleep 3;
-				$irc->send_srv ("JOIN", $channel);
+				$irc->send_srv ('JOIN', $channel);
 			}
 
 			return;
@@ -209,7 +261,7 @@ sub RunIRCBot {
 			my ($self, $old_nick, $new_nick, $is_myself) = @_;
 
 			if ($is_myself) {
-				warn sprintf ('my nick have been changed from %s to %s', $old_nick, $new_nick);
+				$log->warn (sprintf 'My nick have been changed from %s to %s', $old_nick, $new_nick);
 			}
 
 			return;
@@ -219,7 +271,7 @@ sub RunIRCBot {
 			my ($self, $nick, $channel, $is_myself, $msg) = @_;
 
 			if ($is_myself) {
-				warn sprintf ('I left %s channel', $channel);
+				$log->warn (sprintf 'I left %s channel', $channel);
 			}
 
 			return;
@@ -229,7 +281,7 @@ sub RunIRCBot {
 			my ($self, $nick, $channel, $is_myself) = @_;
 
 			if ($is_myself) {
-				warn sprintf ('I joined to %s channel', $channel);
+				$log->info (sprintf 'I joined to %s channel', $channel);
 			}
 
 			return;
@@ -275,7 +327,6 @@ sub RunIRCBot {
 	$irc->disconnect;
 	return;
 }
-
 
 1;
 

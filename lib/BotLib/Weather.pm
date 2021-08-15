@@ -6,11 +6,11 @@ use warnings;
 use utf8;
 use open qw (:std :utf8);
 use English qw ( -no_match_vars );
-use Carp qw (carp cluck);
 use CHI;
 use CHI::Driver::BerkeleyDB;
 use HTTP::Tiny;
 use JSON::XS;
+use Log::Any qw ($log);
 use BotLib::Conf qw (LoadConf);
 use BotLib::Util qw (trim urlencode);
 
@@ -33,7 +33,7 @@ sub Weather {
 		my $appid = $c->{openweathermap}->{appid};
 
 		unless (defined $appid) {
-			carp ("[WARN] No appid specified for openweathermap\n");
+			$log->warn ('[WARN] No appid specified for openweathermap');
 			return undef;
 		}
 
@@ -60,11 +60,11 @@ sub Weather {
 			};
 
 			unless (defined $fc) {
-				carp ("[WARN] openweathermap returns corrupted json: $EVAL_ERROR\n");
+				$log->warn ("[WARN] openweathermap returns corrupted json: $EVAL_ERROR");
 				return undef;
 			};
 		} else {
-			carp (sprintf "Server return status %s with message: %s\n", $r->{status}, $r->{reason});
+			$log->warn (sprintf 'Server return status %s with message: %s', $r->{status}, $r->{reason});
 			return undef;
 		}
 
