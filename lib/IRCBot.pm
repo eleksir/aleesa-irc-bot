@@ -71,12 +71,11 @@ sub RunIRCBot {
 					}
 				}
 
-				$answer = eval {
-					sprintf '%s, %s', $nick, lcfirst ($hailo->{$chatid}->learn_reply ($phrase));
-				};
+				$answer = $hailo->{$chatid}->learn_reply ($phrase);
 
-				unless (defined $answer) {
-					$log->warn ($EVAL_ERROR);
+				if (defined $answer) {
+					$answer = sprintf '%s, %s', $nick, lcfirst ($answer);
+				} else {
 					$answer = sprintf '%s, %s', $nick, RandomCommonPhrase ();
 				}
 			} elsif (substr ($text, -2) eq '++'  ||  substr ($text, -2) eq '--') {
